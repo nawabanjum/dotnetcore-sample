@@ -1,0 +1,76 @@
+﻿@page "/Product/Delete/{Id}"
+@using Sample.BlazorServer.Endpoints
+@inject IProductRepository _productRepo
+@inject NavigationManager _Nav
+
+@if (!IsSuccess)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+       <strong>Something went wrong!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+@if (int.Parse(Id) < 1 || string.IsNullOrWhiteSpace(Id))
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Something went wrong!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+else if (dto == null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Loading......</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+else
+{
+
+
+    <div class="card" style="width: 36rem;">
+       
+        <div class="card-body">
+            <h5 class="card-title">Product Detail</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Product Name: @dto.ProductName</li>
+            <li class="list-group-item">Product Price: @dto.ProductPrice</li>
+            <li class="list-group-item">Product Category: @dto.ProductCategory</li>
+            <li class="list-group-item">Product Description: @dto.ProductDescription</li>
+           
+        </ul>
+        <div @onclick="DeleteProduct" class="btn btn-danger">
+            <span class=" oi oi-delete"></span>
+            Delete Product
+        </div>
+    </div>
+}
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    private ProductDTO dto = new ProductDTO();
+    private bool IsSuccess = true;
+    protected override async Task OnInitializedAsync()
+    {
+        string apiUrl = StaticEndpoints.GetSingleProductsEndpoint;
+        int id = Convert.ToInt32(Id);
+        dto = await _productRepo.GetById(apiUrl, id);
+    }
+    private async Task DeleteProduct()
+    {
+        string apiUrl = StaticEndpoints.DeleteProductEndpoint;
+        IsSuccess = await _productRepo.Delete(apiUrl, dto.ProductId);
+        if (IsSuccess)
+        {
+            _Nav.NavigateTo("/Product/List");
+        }
+    }
+   
+}

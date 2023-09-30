@@ -1,0 +1,27 @@
+﻿@page "/ExternalLoginCallback/{Email}/{Password}"
+@inject NavigationManager _nav
+@inject IAuthRepository _authRepo
+<h3>Processing...</h3>
+
+@code {
+    [Parameter]
+    public string Email { get; set; }
+    [Parameter]
+    public string Password { get; set; }
+    LoginDTO userDto = new LoginDTO();
+    protected override async Task OnInitializedAsync()
+    {
+        userDto.Password = Password;
+        userDto.Email = Email;
+        var responce = await _authRepo.Login(userDto);
+        if (responce)
+        {
+            _nav.NavigateTo("/");
+        }
+        else
+        {
+            _nav.NavigateTo("/Account/login");
+        }
+    
+    }
+}

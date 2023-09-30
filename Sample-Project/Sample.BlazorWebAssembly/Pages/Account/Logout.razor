@@ -1,0 +1,12 @@
+﻿@page "/Account/logout"
+
+@inject NavigationManager _Nav
+@inject IAuthRepository _authRepo
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await _authRepo.Logout();
+        _Nav.NavigateTo("/");
+    }
+}

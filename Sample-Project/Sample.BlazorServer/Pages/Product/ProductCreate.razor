@@ -1,0 +1,89 @@
+﻿@page "/Product/Create"
+@using BlazorInputFile;
+@using Sample.BlazorServer.Endpoints
+@inject IProductRepository _productRepo
+@inject IUpload _upload
+@inject NavigationManager _Nav
+<h1>Create Product</h1>
+@if (IsSuccess == false)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Something went wrong!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+<EditForm Model="productDTO" OnValidSubmit="HandleProductCreate">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="exampleInputEmail1">Product Name</label>
+        <input type="text" class="form-control" @bind-value="productDTO.ProductName"/>
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Product Price</label>
+        <input type="number" class="form-control" @bind-value="productDTO.ProductPrice"/>
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Product Category</label>
+        <input type="text" class="form-control" @bind-value="productDTO.ProductCategory"/>
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Product Description</label>
+        <input type="text" class="form-control" @bind-value="productDTO.ProductDescription"/>
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Upload Product Image</label>
+        <BlazorInputFile.InputFile OnChange="HandleFileUpload" />
+       @if(!string.IsNullOrWhiteSpace(imageDataUrl))
+            {
+        <img src="@imageDataUrl" height="100" width="100" />
+            }
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+@code {
+    private ProductDTO productDTO = new ProductDTO();
+    private bool IsSuccess = true;
+    private MemoryStream msFile;
+    private IFileListEntry file;
+    private string imageDataUrl;
+    private async  Task HandleFileUpload(IFileListEntry[] files)
+    {
+
+        file = files.FirstOrDefault();
+        if(file !=null)
+        {
+            var name=file.Name;
+            msFile = new MemoryStream();
+            await file.Data.CopyToAsync(msFile);
+            var reader=new  StreamReader(file.Data);
+            var imageBase64Data=Convert.ToBase64String(msFile.ToArray());
+            imageDataUrl = string.Format("data:image/png;base64,{0}", imageBase64Data);
+        }
+    }
+    protected async Task HandleProductCreate()
+    {
+        IsSuccess = false;
+        string apiUrl = StaticEndpoints.AddProductEndpoint;
+        productDTO.EntryDate = DateTime.Now;
+        productDTO.ProductImage = "";
+        if (file != null)
+        {
+            var ext = Path.GetExtension(file.Name);
+            var picId = Guid.NewGuid().ToString().Replace("-","");
+            var picName = $"{picId}{ext}";
+            _upload.UploadFile(file,msFile,picName);
+            productDTO.ProductImage = picName;
+        }
+
+
+        IsSuccess = await _productRepo.Create(apiUrl, productDTO);
+        if (IsSuccess)
+        {
+            _Nav.NavigateTo("/Product/List");
+        }
+    }
+}
