@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Sample.WebApi.DTO;
 using Sample.WebApi.Models;
-using System.Net.NetworkInformation;
-using System;
-using System.Xml;
-using System.Xml.Serialization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,13 +18,11 @@ namespace Sample.WebApi.Controllers
         private readonly App_BlazorDBContext _app_BlazorDBContext;
         private readonly IMapper mapper;
         private readonly ILogger<ProductsController> logger;
-        private IConfiguration _Configuration;
-        public ProductsController(IConfiguration Configuration, App_BlazorDBContext app_BlazorDBContext, ILogger<ProductsController> logger, IMapper mapper)
+        public ProductsController(App_BlazorDBContext app_BlazorDBContext, ILogger<ProductsController> logger, IMapper mapper)
         {
             this.mapper = mapper;
             this.logger = logger;
             _app_BlazorDBContext = app_BlazorDBContext;
-            _Configuration = Configuration;
         }
         [HttpGet]
         [Route("GetProducts")]
@@ -38,34 +31,13 @@ namespace Sample.WebApi.Controllers
             List<ProductDTO> productlist = new List<ProductDTO>();
             try
             {
-                string connectionString = _Configuration.GetConnectionString("DefaultConnection");
-                string query = "SELECT * FROM Products FOR XML PATH('item'), ROOT('root')";
-
-                using (var connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        SqlDataReader reader = command.ExecuteReader();
-
-                        if (reader.HasRows)
-                        {
-                            reader.Read();
-                            string xmlData = reader[0].ToString();
-                            // Now you have the XML data in the "xmlData" string.
-                            productlist = ParseAndBindXmlToModel(xmlData);
-                        }
-                        reader.Close();
-                    }
-                }
-                //var list = await _app_BlazorDBContext.Products.ToListAsync();
-                if (productlist == null)
+                var list = await _app_BlazorDBContext.Products.ToListAsync();
+                if (list == null)
                 {
                     logger.LogError($"Record Not Found:{nameof(Get)}");
                     return NotFound();
                 }
-                // productlist = (List<ProductDTO>)mapper.Map<IEnumerable<ProductDTO>>(list);
+                 productlist = (List<ProductDTO>)mapper.Map<IEnumerable<ProductDTO>>(list);
             }
             catch (Exception ex)
             {
@@ -168,45 +140,6 @@ namespace Sample.WebApi.Controllers
                
             }
             return Ok();
-        }
-      private List<ProductDTO> ParseAndBindXmlToModel(string xmlData)
-        {
-            var list = new List<Products>();
-            List<ProductDTO> productList = new List<ProductDTO>();
-
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlData);
-
-            XmlNodeList productNodes = xmlDoc.SelectNodes("//item");
-        
-
-            foreach (XmlNode productNode in productNodes)
-            {
-                ProductDTO product = new ProductDTO();
-
-                product.ProductId = Convert.ToInt32(productNode.SelectSingleNode("ProductId").InnerText);
-                product.ProductName = productNode.SelectSingleNode("ProductName").InnerText;
-                product.ProductCategory = productNode.SelectSingleNode("ProductCategory").InnerText;
-                product.ProductImage = productNode.SelectSingleNode("ProductImage").InnerText;
-                product.ProductDescription = productNode.SelectSingleNode("ProductDescription").InnerText;
-                product.EntryDate = Convert.ToDateTime(productNode.SelectSingleNode("EntryDate").InnerText);
-                product.ProductPrice = Convert.ToDecimal(productNode.SelectSingleNode("ProductPrice").InnerText);
-           
-
-                productList.Add(product);
-            }
-            //XmlDocument xmlDoc = new XmlDocument();
-            //XmlSerializer serializer = new XmlSerializer(typeof(ProductDTO));
-
-            //using (TextReader reader = new StringReader(xmlData.ToString()))
-            //{
-            //     var items = (ProductDTO)serializer.Deserialize(reader);
-            //}
-
-
-
-            // Now you have the data mapped to your model.
-            return productList;
         }
     }
 }

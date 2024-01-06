@@ -1,16 +1,15 @@
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using Sample.BlazorServer.AuthProvider;
 using Sample.BlazorServer.Data;
 using Sample.BlazorServer.Implementation;
 using Sample.BlazorServer.Service;
 using System.IdentityModel.Tokens.Jwt;
 
-
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
+
 // Add services to the container.
 builder.Services.AddHttpClient();
 builder.Services.AddRazorPages();
@@ -24,37 +23,6 @@ builder.Services.AddScoped<AuthenticationProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(p =>
     p.GetRequiredService<AuthenticationProvider>());
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
-
-
-builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-{
-    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-});
-
-//builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-//{
-//    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-//});
-//builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-//             {
-//                 googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//                 googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-//             });
-//.AddGoogle("Google", options =>
-//{
-//    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-//    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-//})
-//.AddFacebook("Facebook", options =>
-//{
-//    options.ClientId = builder.Configuration["Authentication:Facebook:AppId"];
-//    options.ClientSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
-//});
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

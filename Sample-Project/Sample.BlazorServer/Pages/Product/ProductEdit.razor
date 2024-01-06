@@ -2,7 +2,7 @@
 @using Sample.BlazorServer.Endpoints
 @inject IProductRepository _productRepo
 @inject NavigationManager _Nav
-@inject IUpload _upload
+
 <h2>Edit</h2>
 @if(int.Parse(Id)<1||string.IsNullOrWhiteSpace(Id))
 {
@@ -45,14 +45,6 @@ else
         <label for="exampleInputEmail1">Product Description</label>
         <input type="text" class="form-control" @bind-value="dto.ProductDescription">
     </div>
-        <div class="form-group">
-            <label for="exampleInputEmail1">Upload Product Image</label>
-            <BlazorInputFile.InputFile OnChange="HandleFileUpload" />
-            @if (!string.IsNullOrWhiteSpace(imageDataUrl))
-            {
-                <img src="@imageDataUrl" height="100" width="100" />
-            }
-        </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 }
@@ -62,30 +54,11 @@ else
     public string Id { get; set; }
     private ProductDTO dto = new ProductDTO();
     private bool IsSuccess = true;
-    private MemoryStream msFile;
-    private IFileListEntry file;
-    private string imageDataUrl;
-    private async Task HandleFileUpload(IFileListEntry[] files)
-    {
-
-        file = files.FirstOrDefault();
-        if (file != null)
-        {
-            var name = file.Name;
-            msFile = new MemoryStream();
-            await file.Data.CopyToAsync(msFile);
-            var reader = new StreamReader(file.Data);
-            var imageBase64Data = Convert.ToBase64String(msFile.ToArray());
-            imageDataUrl = string.Format("data:image/png;base64,{0}", imageBase64Data);
-        }
-    }
     protected override async Task OnInitializedAsync()
     {
         string apiUrl = StaticEndpoints.GetSingleProductsEndpoint;
         int id = Convert.ToInt32(Id);
-
         dto = await _productRepo.GetById(apiUrl, id);
-        imageDataUrl = "/uploads/" + dto.ProductImage;
     }
     protected async Task HandleProductCreate()
     {
@@ -94,15 +67,6 @@ else
         dto.EntryDate = DateTime.Now;
         dto.ProductImage = "";
         int id = Convert.ToInt32(Id);
-        dto.ProductImage = "";
-        if (file != null)
-        {
-            var ext = Path.GetExtension(file.Name);
-            var picId = Guid.NewGuid().ToString().Replace("-", "");
-            var picName = $"{picId}{ext}";
-            _upload.UploadFile(file, msFile, picName);
-            dto.ProductImage = picName;
-        }
         IsSuccess = await _productRepo.Update(apiUrl, id, dto);
         if (IsSuccess)
         {

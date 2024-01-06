@@ -1,8 +1,6 @@
 ﻿@page "/Product/List"
-@attribute [Authorize]
 @using Sample.BlazorServer.Endpoints
 @inject IProductRepository _productRepo
-@using Microsoft.AspNetCore.Authorization
 <div class="card">
     <div class="card-body">
         <a href="/Product/Create">Add New Product</a>
@@ -11,7 +9,6 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Product Name</th>
-                    <th scope="col">Product Price</th>
                     <th scope="col">Category</th>
                     <th scope="col">Description</th>
                     <th scope="col">Action</th>
@@ -34,7 +31,6 @@
                         <tr>
                             <th scope="row">1</th>
                             <td>@item.ProductName</td>
-                            <td><img src="/uploads/@item.ProductImage" height="100" width="100" /></td>
                             <td>@item.ProductCategory</td>
                             <td>@item.ProductDescription</td>
                             <td><a href="/Product/Edit/@item.ProductId">Edit Product</a></td>

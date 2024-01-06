@@ -7,7 +7,7 @@ using Sample.WebApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
+
 //// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<App_BlazorDBContext>(options => options.UseSqlServer(connectionString));
@@ -47,23 +47,10 @@ builder.Services.AddAuthentication(option =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jWTSetting:Key"]))
         };
     });
-builder.Services.AddAuthentication()
-           .AddGoogle(options =>
-           {
-               options.ClientId = "360531172431-k8nskke7vm4ifum1la4ersdmu6n46t0b.apps.googleusercontent.com";
-               options.ClientSecret = "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";
-           });
-//builder.Services.AddAuthentication().AddGoogle(googleOptions =>
-//{
-//    googleOptions.ClientId = "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";
-//    googleOptions.ClientSecret = "360531172431-k8nskke7vm4ifum1la4ersdmu6n46t0b.apps.googleusercontent.com";
-//});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(p => p.AddPolicy("corspolicy", builder =>
-{
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-}));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -77,7 +64,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();    
 app.UseAuthorization();
-app.UseCors("corspolicy");
+
 app.MapControllers();
 
 app.Run();

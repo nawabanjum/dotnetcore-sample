@@ -1,11 +1,9 @@
 ﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Sample.BlazorServer.AuthProvider;
 using Sample.BlazorServer.DTO;
 using Sample.BlazorServer.Endpoints;
 using Sample.BlazorServer.Service;
-using System;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -23,22 +21,6 @@ namespace Sample.BlazorServer.Implementation
             _authenticationProvider=authenticationProvider;
         }
 
-        public async Task<string> ExternalLogins()
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, StaticEndpoints.AuthExternalLoginEndpoint);
-
-            var client = _httpClientFactory.CreateClient();
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
-            HttpResponseMessage response = await client.SendAsync(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                // JsonConvert.DeserializeObject<List<ExterLogin>>(content);
-                return "";
-            }
-            return "";
-        }
-       
         public async Task<bool> Login(LoginDTO dto)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, StaticEndpoints.AuthLoginEndpoint)
@@ -84,6 +66,5 @@ namespace Sample.BlazorServer.Implementation
             return response.IsSuccessStatusCode;
 
         }
-
     }
 }

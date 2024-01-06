@@ -52,14 +52,14 @@ namespace Sample.WebApi.Migrations
                         new
                         {
                             Id = "bda30051-c030-467c-93e8-ae3e0b5bee4e",
-                            ConcurrencyStamp = "8e6799bb-60b3-4c12-94b9-f545fc52a444",
+                            ConcurrencyStamp = "a4fdf3ee-6253-41c4-af23-d024ad0c6666",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
                             Id = "e15c12c3-5582-4711-9306-984e0df1dcdd",
-                            ConcurrencyStamp = "41f78b37-17cc-4456-aae8-5916a8f35cb8",
+                            ConcurrencyStamp = "39c6b541-0ff4-4e51-8503-b1668e4f0c01",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -286,9 +286,6 @@ namespace Sample.WebApi.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("UserPassword")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -306,7 +303,7 @@ namespace Sample.WebApi.Migrations
                         {
                             Id = "2314094f-0974-4783-ae24-97b801faf01d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6aadbc95-9026-4242-a88d-5f34f67b9d95",
+                            ConcurrencyStamp = "322bc160-2c16-4a17-a947-d0b96274f39f",
                             Email = "admin@admin.com",
                             EmailConfirmed = false,
                             FirstName = "System",
@@ -314,10 +311,10 @@ namespace Sample.WebApi.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEK6xtmFX8/MsQ5/0qSHeCsBQ8Y3wqYfLytL9lZI5tdVp7JIP8QbIaznLU1O7FX23qA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFtC7IW/TQaR8A8aUhrc43HHTBWwcSVNv8DfhtaWG1wYc7r2V867kTQCt7KUTC/jxg==",
                             PhoneNumberConfirmed = false,
                             ProfilePicture = "noimage.png",
-                            SecurityStamp = "f01b449b-e3e6-45d3-9202-286d0a39d8c9",
+                            SecurityStamp = "a98fab7a-39e2-4aa6-a62e-f3e8e8f8d04e",
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         },
@@ -325,7 +322,7 @@ namespace Sample.WebApi.Migrations
                         {
                             Id = "fe750ed8-92fd-484e-a3fa-dc5f4b62c0d1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "264a3f77-2fd0-4aa7-9463-7f0857d94a5e",
+                            ConcurrencyStamp = "1cb0e701-0a5e-4918-ac8a-2bdf7b4b69c7",
                             Email = "user@user.com",
                             EmailConfirmed = false,
                             FirstName = "System",
@@ -333,10 +330,10 @@ namespace Sample.WebApi.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@USER.COM",
                             NormalizedUserName = "USER@USER.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEL73YsyU2mDNu1p7lwBflCIhRi9ZxUHFuLYiIywLT0DcoQ7/HPANxtzmC586qTE7NA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECFRMEhAsjW7Zkfdr5Yr6OfDUvi4spThtZnR4SRlSPzR8F11aC3mFKe6xgfqPCMzmg==",
                             PhoneNumberConfirmed = false,
                             ProfilePicture = "noimage.png",
-                            SecurityStamp = "9993223e-c8b2-4c14-9f63-785be42518af",
+                            SecurityStamp = "9d0ab209-d62a-44ba-8300-8cc31add0fd9",
                             TwoFactorEnabled = false,
                             UserName = "user@user.com"
                         });

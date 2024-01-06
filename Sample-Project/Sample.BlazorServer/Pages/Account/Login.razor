@@ -1,9 +1,7 @@
 ﻿@page "/Account/Login"
-@using Microsoft.AspNetCore.Authentication;
-@using Microsoft.AspNetCore.Identity;
 @inject NavigationManager _nav
 @inject IAuthRepository _authRepo
-@inject AuthenticationStateProvider AuthenticationStateProvider
+
 @if(IsFields == true)
 {
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -29,28 +27,13 @@
     </div>
    <br />
    <button type="submit" class="btn btn-success"  >Submit</button>
-   
    <a href="/Account/Register">Don't have account ?</a>
-  
 </EditForm>
-  <button @onclick="LoginWithGoogle">Login with Google</button>
+
 
 @code {
     LoginDTO userDto = new LoginDTO();
     bool IsFields = false;
-    private List<ExterLogin> exterLogins;
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    var responce = await _authRepo.ExternalLogins(");
-    //    if (responce.Count()>0)
-    //    {
-    //        exterLogins = responce;
-    //    }
-    //}
-    private async Task LoginWithGoogle()
-    {
-        _nav.NavigateTo("https://localhost:7182/api/Account/google-login");
-    }
     protected async Task HandleRegistration()
     {
         var responce = await _authRepo.Login(userDto);
@@ -63,24 +46,4 @@
             IsFields = true;
         }
     }
-
-    //private async Task LoginWithGoogle()
-    //{
-    //    //   var logins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-    //    //var authenticationState = await authenticationStateTask;
-    //    //var user = authenticationState.User;
-
-    //    //if (!user.Identity.IsAuthenticated)
-    //    //{
-    //    //    var authenticationProperties = new AuthenticationProperties
-    //    //        {
-    //    _nav.NavigateTo("https://localhost:7206/signin-google");
-    //    //RedirectUri = "https://localhost:7206/signin-google"; // Redirect after successful login
-    //    //};
-
-    //        //await HttpContext.SignInAsync("Google", authenticationProperties);
-    //    //}
-    //}
-
-
 }
